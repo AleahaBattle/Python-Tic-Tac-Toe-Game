@@ -157,7 +157,7 @@ if __name__ == '__main__':
         
         # player chooses letter
         player_letter, computer_letter = choose_player_letter()
-        print('Your {}, the computer is {}.\n'.format(player_letter, computer_letter)
+        print('Your {}, the computer is {}.\n'.format(player_letter, computer_letter))
         
         # decide who's first
         turn = who_goes_first()
@@ -217,6 +217,6 @@ if __name__ == '__main__':
                           # it's the player's turn
                           turn = 'player'
             
-            # check if the player wants to play again
-            if not play_again():
-              break
+        # check if the player wants to play again
+        if not play_again():
+            break
