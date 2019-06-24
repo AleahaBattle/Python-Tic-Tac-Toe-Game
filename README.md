@@ -12,11 +12,4 @@ A Tic-Tac-Toe computer program that can intelligently respond to the player’s 
 ## Understanding the Program
 The computer searches for the best move that leads the player to lose (or tie). It consider the current state of the game and the available moves at that state, then for each valid move it plays, until it finds a terminal state (win, draw or lose).
 
-
-
-System Requirements: Python 3
-
-| Filename        | Description                                                                                |
-|-----------------|--------------------------------------------------------------------------------------------|
-| tictactoe.py    | user vs computer game                                                                      |
-
+Book: Al Sweigart. Invent Your Own Computer Games with Python, 4th Edition. No Starch Press, Inc., 2017.
