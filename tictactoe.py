@@ -1,14 +1,5 @@
 import random
 
-# --------- Global Variable -----------
-
-# board is a list of 10 strings representing the board (ignore index 0)
-board = [
-    ' ', 
-    ' ', ' ', ' ',
-    ' ', ' ', ' ',
-    ' ', ' ', ' '
-]
 
 # ------------- Functions ---------------
 
@@ -35,37 +26,43 @@ def choose_player_letter():
         
 
 def who_goes_first():
-    # Randomly choose the player who goes first.
+    # Randomly choose who goes first.
+    turn = ''
     if random.randint(0, 1) == 0:
-        return 'computer'
+        turn = 'computer'
     else:
-        return 'player'
+        turn = 'player'
+    return turn
 
 
 def make_move(board, letter, move):
     # the player or computer chooses a move on the board
     board[move] = letter
-    
-      
-def play_again():
-     # this function returns True if the player wants to play again, otherwise it returns False.
-    print('Do you want to play again? (yes or no)')
-    return input().lower().startswith('y')
+
     
 def is_winner(board, letter):
     # Given a board and a player’s letter, this function returns True if that player has won.
-    winning_combos = (
+    
+    winning_combos = [
         (7, 8, 9), (4, 5, 6), (1, 2, 3),
         (7, 4, 1), (8, 5, 2), (9, 6, 3),
         (7, 5, 3), (9, 5, 1)
-    )
+    ]
     
     for a, b, c in winning_combos:
         if board[a] == board[b] == board[c] == letter:
             return True
-        else:
-            return False
-    
+    return False
+    '''
+    return ((board[7] == letter and board[8] == letter and board[9] == letter) or # Across the top
+            (board[4] == letter and board[5] == letter and board[6] == letter) or # Across the middle
+            (board[1] == letter and board[2] == letter and board[3] == letter) or # Across the bottom
+            (board[7] == letter and board[4] == letter and board[1] == letter) or # Down the left side
+            (board[8] == letter and board[5] == letter and board[2] == letter) or # Down the middle
+            (board[9] == letter and board[6] == letter and board[3] == letter) or # Down the right side
+            (board[7] == letter and board[5] == letter and board[3] == letter) or # Diagonal
+            (board[9] == letter and board[5] == letter and board[1] == letter)) # Diagonal
+    '''
     
 def get_board(board):
     """Make a duplicate of the board list and return it the duplicate. The AI algorithm to make temporary modifications to a temporary copy of the board without changing the original board."""
@@ -82,11 +79,11 @@ def is_space_free(board, move):
 
 def get_player_move(board):
     # Let the player type in their move.
-    move = ''
-    while move not in ['1', '2', '3', '4', '5', '6', '7', '8', '9'] or not is_space_free(board, int(move)):
+    move = ' '
+    while move not in '1 2 3 4 5 6 7 8 9'.split() or not is_space_free(board, int(move)):
         print('Move on which space? (1-9)')
-        move = eval(input())
-    return move
+        move = input()
+    return int(move)
     
     
 def choose_random_move(board, moves_list):
@@ -97,7 +94,7 @@ def choose_random_move(board, moves_list):
         if is_space_free(board, i):
             possible_moves.append(i)
     if len(possible_moves) != 0:
-        return random.choices(possible_moves)
+        return random.choice(possible_moves)
     else:
         return None
 
@@ -112,26 +109,26 @@ def get_computer_move(board, computer_letter):
     # Here is the algorithm for the Tic Tac Toe AI:
     # First, check if the computer can win in the next move
     for i in range(1, 10):
-        copy = get_board(board)
-        if is_space_free(copy, i):
-            make_move(copy, player_letter, i)
-            is_winner(copy, computer_letter)
-            return i
+        copy_board = get_board(board)
+        if is_space_free(copy_board, i):
+            make_move(copy_board, computer_letter, i)
+            if is_winner(copy_board, computer_letter):
+                return i
     # Check if the player could win on their next move, and block them.
     for i in range(1, 10):
-        copy = get_board(board)
-        if is_space_free(copy, i):
-            make_move(copy, player_letter, i)
-            is_winner(copy, player_letter)
-            return i
+        copy_board = get_board(board)
+        if is_space_free(copy_board, i):
+            make_move(copy_board, player_letter, i)
+            if is_winner(copy_board, player_letter):
+                return i
     # choose a random move from the corner spaces
     move = choose_random_move(board, [1, 3, 7, 9])
     if move != None:
         return move
-     # Try to take the center, if it is free.
+    # Try to take the center, if it is free.
     if is_space_free(board, 5):
         return 5
-     # Move on one of the sides.
+    # Move on one of the sides.
     return choose_random_move(board, [2, 4, 6, 8])
 
 
@@ -139,8 +136,8 @@ def is_board_full(board):
     # Return True if every space on the board has been taken. Otherwise return False.
     for i in range(1, 10):
         if is_space_free(board, i):
-            return True
-        return False
+            return False
+    return True
 
 
 # ------------ Start Execution -------------
@@ -153,6 +150,7 @@ if __name__ == '__main__':
     # the game keeps playing until the execution encounters a break statement
     while True:
         # Reset the board
+        # the_board is a list of 10 strings representing the board (ignore index 0)
         the_board = [' '] * 10
         
         # player chooses letter
@@ -161,15 +159,14 @@ if __name__ == '__main__':
         
         # decide who's first
         turn = who_goes_first()
-        print('The ' + turn + 'will go first')
+        print('The ' + turn + ' has been randomly chosen to go first')
         
         # keep track of if game is still playing
         game_is_playing = True
         
         while game_is_playing:
               if turn == 'player':
-                  # player’s turn
-              
+                  # it's the player’s turn
                   # display board
                   draw_board(the_board)
               
@@ -194,8 +191,7 @@ if __name__ == '__main__':
                           turn = 'computer'
                         
               else:
-                  # computer’s turn
-              
+                  # it's the computer’s turn
                   # the computer decides their move
                   move = get_computer_move(the_board, computer_letter)
               
@@ -216,7 +212,9 @@ if __name__ == '__main__':
                       else:
                           # it's the player's turn
                           turn = 'player'
-            
+
         # check if the player wants to play again
-        if not play_again():
+        print('Do you want to play again? (yes or no)')
+
+        if not input().lower().startswith('y'):
             break
